@@ -9,5 +9,7 @@
       }
     ]
   ],
+  "sourceMaps": "inline",
+  "retainLines": true,
   "plugins": []
 }
