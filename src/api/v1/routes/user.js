@@ -2,15 +2,14 @@ import { Router } from 'express';
 import { User } from '../../../db/models';
 import JWT from '../utils/auth';
 import authenticateUser from '../middlewares/authenticate';
-// @ts-check
 
 const router = Router();
 const { newToken } = JWT;
 
 /* eslint-disable no-use-before-define */
-router.get('/me', [authenticateUser, getUserInfo]);
 router.post('/signup', register);
 router.post('/signin', login);
+router.get('/me', [authenticateUser, getUserInfo]);
 router.patch('/update', [authenticateUser, updateUser]);
 
 export default router;
