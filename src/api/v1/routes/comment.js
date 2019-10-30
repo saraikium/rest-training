@@ -1,16 +1,11 @@
 import { Router } from 'express';
-import { Op } from 'sequelize';
-import { Comment } from '../../../db/models';
-import JWT from '../utils/auth';
 import authenticateUser from '../middlewares/authenticate';
-import { PAGINATION_LIMIT } from '../../configs';
+import commentRouteHanlders from '../lib/comment';
 
+const { createComment, deleteComment } = commentRouteHanlders;
 const router = Router();
 
-export default router;
+router.post('/', [authenticateUser, createComment]);
+router.delete('/:commentId', [authenticateUser, deleteComment]);
 
-/**
-|--------------------------------------------------
-| Comment Route Handlers
-|--------------------------------------------------
-*/
+export default router;

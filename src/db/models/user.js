@@ -41,6 +41,11 @@ module.exports = (sequelize, DataTypes) => {
       foreignKeyConstraint: true,
       foreignKey: 'userId'
     });
+    User.hasMany(models.Comment, {
+      as: 'comments',
+      foreignKey: 'userId',
+      foreignKeyConstraint: true
+    });
   };
 
   // Instance methods
