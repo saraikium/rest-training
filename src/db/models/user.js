@@ -36,8 +36,13 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   User.associate = function(models) {
-    // associations can be defined here
+    User.hasMany(models.Post, {
+      as: 'posts',
+      foreignKeyConstraint: true,
+      foreignKey: 'userId'
+    });
   };
+
   // Instance methods
   User.prototype.authenticate = function checkPassword(password) {
     const hash = this.getDataValue('passwordHash');
