@@ -12,3 +12,7 @@
 
 1. Sequelize (hooks(beforeUpdate, BeforeCreate), validations)
 2. Code Organization
+
+Business logic and why use lib?
+helpers
+[x] Serializers

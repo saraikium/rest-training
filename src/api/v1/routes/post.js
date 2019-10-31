@@ -1,13 +1,14 @@
 import { Router } from 'express';
 import authenticateUser from '../middlewares/authenticate';
-import postRouteHandlers from '../lib/post';
+import postRouteHandlers from '../routeHelpers/post';
+import autoCatch from '../errors/autoCatch';
 
-const { getPost, deletePost, createPost, updatePost } = postRouteHandlers;
+const { getPosts, deletePost, createPost, updatePost } = postRouteHandlers;
 const router = Router();
 
-router.get('/', getPost);
-router.post('/', [authenticateUser, createPost]);
-router.delete('/:postId', [authenticateUser, deletePost]);
-router.patch('/:postId', [authenticateUser, updatePost]);
+router.get('/', autoCatch(getPosts));
+router.post('/', autoCatch([authenticateUser, createPost]));
+router.delete('/:postId', autoCatch([authenticateUser, deletePost]));
+router.patch('/:postId', autoCatch([authenticateUser, updatePost]));
 
 export default router;

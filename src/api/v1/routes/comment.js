@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import authenticateUser from '../middlewares/authenticate';
-import commentRouteHanlders from '../lib/comment';
+import commentRouteHanlders from '../routeHelpers/comment';
+import autoCatch from '../errors/autoCatch';
 
 const { createComment, deleteComment } = commentRouteHanlders;
 const router = Router();
 
-router.post('/', [authenticateUser, createComment]);
-router.delete('/:commentId', [authenticateUser, deleteComment]);
+router.post('/', autoCatch([authenticateUser, createComment]));
+router.delete('/:commentId', autoCatch([authenticateUser, deleteComment]));
 
 export default router;

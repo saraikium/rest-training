@@ -42,7 +42,6 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'userId'
     });
     User.hasMany(models.Comment, {
-      as: 'comments',
       foreignKey: 'userId',
       foreignKeyConstraint: true
     });
@@ -54,8 +53,8 @@ module.exports = (sequelize, DataTypes) => {
     return bcrypt.compare(password, hash);
   };
   // Hooks
-  User.beforeCreate((user, options) => {
-    console.log('User is in model', user);
+  User.beforeCreate(user => {
+    // eslint-disable-next-line
     user.passwordHash = bcrypt.hashSync(user.password, 12);
   });
   return User;
