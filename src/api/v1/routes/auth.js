@@ -54,7 +54,7 @@ async function signup(req, resp) {
   resp.status(201).json({ token, refreshToken });
 }
 
-async function getNewToken(req, resp, next) {
+async function getNewToken(req, resp) {
   const oldToken = req.body.refreshToken;
 
   if (!oldToken) throw new AuthenticationError(authenticationErrorMessage());
