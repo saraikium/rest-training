@@ -2,14 +2,23 @@ import { Router } from 'express';
 import { User } from '../../../db/models';
 import JWT from '../utils/auth';
 import autoCatch from '../errors/autoCatch';
+import serializers from '../serializers';
+import authenticateUser from '../middlewares/authenticate';
+import errorMessages from '../errors/errorMessages';
+import {
+  AuthenticationError,
+  NotFoundError
+} from '../../../errors/ErrorClasses';
 
-const { newToken } = JWT;
-const router = Router();
+const { userSerializer } = serializers;
+const { newToken, verifyToken, newRefreshToken } = JWT;
+const { notFoundMessage, authenticationErrorMessage } = errorMessages;
 
 /* eslint-disable no-use-before-define */
+const router = Router();
 router.post('/signup', autoCatch(signup));
 router.post('/signin', autoCatch(signin));
-
+router.post('/refresh-token', autoCatch([authenticateUser, getNewToken]));
 export default router;
 
 /**
@@ -23,20 +32,35 @@ async function signin(req, resp) {
   const user = await User.findOne({
     where: { email }
   });
-  if (!user) {
-    return resp.status(404).json({ error: 'Not found.' });
-  }
+
+  if (!user) throw new NotFoundError(notFoundMessage('User'));
+
   const authenticated = await user.authenticate(password);
-  if (!authenticated) {
-    return resp.status(401).json({ error: 'Unauthorized.' });
-  }
+
+  if (!authenticated)
+    throw new AuthenticationError(authenticationErrorMessage());
+
   const token = newToken({ id: user.id });
-  resp.status(200).json({ token });
+  const refreshToken = newRefreshToken({ id: user.id });
+  resp.status(200).json({ token, refreshToken });
 }
 
 async function signup(req, resp) {
   const { user } = req.body;
-  const newUser = await User.create(user);
+  const serializedUser = userSerializer(user);
+  const newUser = await User.create(serializedUser);
   const token = newToken({ id: newUser.id });
-  resp.status(201).json({ token });
+  const refreshToken = newRefreshToken({ id: newUser.id });
+  resp.status(201).json({ token, refreshToken });
+}
+
+async function getNewToken(req, resp, next) {
+  const oldToken = req.body.refreshToken;
+
+  if (!oldToken) throw new AuthenticationError(authenticationErrorMessage());
+
+  const payload = await verifyToken(oldToken);
+  const newAccessToken = newToken({ id: payload.id });
+  const refreshToken = newRefreshToken({ id: payload.id });
+  resp.status(200).json({ token: newAccessToken, refreshToken });
 }

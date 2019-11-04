@@ -1,15 +1,24 @@
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../../config';
+import config from '../../config';
 
 /* eslint-disable no-use-before-define */
 export default {
   newToken,
+  newRefreshToken,
   verifyToken
 };
 
+const { JWT_SECRET } = config;
+
 function newToken(params) {
   return jwt.sign(params, JWT_SECRET, {
-    expiresIn: 1800
+    expiresIn: '1h'
+  });
+}
+
+function newRefreshToken(params) {
+  return jwt.sign(params, JWT_SECRET, {
+    expiresIn: '7d'
   });
 }
 

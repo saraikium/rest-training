@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 import { Comment } from '../../../db/models';
-import { PAGINATION_LIMIT } from '../../config';
+import config from '../../config';
 
 /* eslint-disable no-use-before-define */
 export default {
@@ -9,22 +9,20 @@ export default {
   getCommentsOfPost
 };
 
+const { PAGINATION_LIMIT } = config;
+
 async function createComment(req, resp) {
   const userId = req.user.id;
   const { comment } = req.body;
   const newComment = await Comment.create({ ...comment, userId });
-  resp
-    .status(200)
-    .json({ message: 'Comment created successfully!', newComment });
+  resp.status(200).json({ comment: newComment });
 }
 
 async function deleteComment(req, resp) {
   const userId = req.user.id;
   const id = req.params.commentId;
-  const deletedComment = await Comment.destroy({ where: { id, userId } });
-  resp
-    .status(200)
-    .json({ message: 'Comment deleted successfully!', deletedComment });
+  await Comment.destroy({ where: { id, userId } });
+  resp.status(200).json({ message: 'Comment successfully deleted.' });
 }
 
 async function getCommentsOfPost(req, resp) {
@@ -47,5 +45,5 @@ async function getCommentsOfPost(req, resp) {
     offset,
     limit: PAGINATION_LIMIT
   });
-  resp.status(200).json(comments);
+  resp.status(200).json({ comments });
 }

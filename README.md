@@ -9,8 +9,6 @@
 2. Code Organization
 
 
-Business logic and why use lib?
-helpers
-[x] Serializers
-
-// Refresh Tokens
+* helpers
+* Serializers
+* Refresh Tokens

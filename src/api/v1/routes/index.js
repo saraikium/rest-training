@@ -1,4 +1,3 @@
-// @ts-check
 import { Router } from 'express';
 import user from './user';
 import post from './post';

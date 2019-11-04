@@ -10,6 +10,7 @@ export default function autoCatch(handlers) {
     return handlers.map(handler => auto(handler));
   }
   return Object.keys(handlers).reduce((autoHandlers, key) => {
+    // eslint-disable-next-line
     autoHandlers[key] = auto(handlers[key]);
     return autoHandlers;
   }, {});

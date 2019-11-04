@@ -20,6 +20,7 @@ module.exports = {
     'no-unused-vars': 'warn',
     'consistent-return': 'warn',
     'consistent-return': 0,
-    'no-use-before-define': 1
+    'no-use-before-define': 1,
+    'max-classes-per-file': 0
   }
 };

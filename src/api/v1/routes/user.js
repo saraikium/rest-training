@@ -2,20 +2,21 @@ import { Router } from 'express';
 import { User } from '../../../db/models';
 import authenticateUser from '../middlewares/authenticate';
 import postRouteHandlers from '../helpers/post';
-import commentRouteHandlers from '../helpers/comment';
 import autoCatch from '../errors/autoCatch';
+import serializers from '../serializers';
+import errorMessages from '../errors/errorMessages';
+import { AuthorizationError } from '../../../errors/ErrorClasses';
 
-const { getPostsOfUser } = postRouteHandlers;
-const { getCommentsOfPost } = commentRouteHandlers;
-
+// @ts-check
 /* eslint-disable no-use-before-define */
+const { authorizationErrorMessage } = errorMessages;
+const { getPostsOfUser } = postRouteHandlers;
+const { userSerializer } = serializers;
+
 const router = Router();
 router.get('/me', autoCatch([authenticateUser, getUserInfo]));
 router.patch('/update', autoCatch([authenticateUser, updateUser]));
 router.get('/:userId/posts', autoCatch(getPostsOfUser));
-// This comment route will move to Post
-router.get('/:userId/posts/:postId/comments', autoCatch(getCommentsOfPost));
-
 export default router;
 
 /**
@@ -27,14 +28,15 @@ export default router;
 async function updateUser(req, resp) {
   const { id } = req.user;
   const { user } = req.body;
-  const updatedUser = await User.update(user, { where: { id } });
-  resp.status(200).json(updatedUser);
+  const serializedUser = userSerializer(user);
+  const updatedUser = await User.update(serializedUser, { where: { id } });
+  resp.status(200).json({ user: updatedUser });
 }
 
 function getUserInfo(req, resp) {
   const { user } = req;
   if (!user) {
-    return resp.status(401).json({ error: 'Unauthorized!' });
+    throw new AuthorizationError(authorizationErrorMessage());
   }
-  return resp.status(200).json(user);
+  return resp.status(200).json({ user });
 }
