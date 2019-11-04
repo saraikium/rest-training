@@ -28,7 +28,7 @@ async function signin(req, resp) {
   }
   const authenticated = await user.authenticate(password);
   if (!authenticated) {
-    return resp.status(401).json({ message: 'Unauthorized.' });
+    return resp.status(401).json({ error: 'Unauthorized.' });
   }
   const token = newToken({ id: user.id });
   resp.status(200).json({ token });

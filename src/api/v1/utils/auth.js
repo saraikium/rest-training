@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../../configs';
+import { JWT_SECRET } from '../../config';
 
 /* eslint-disable no-use-before-define */
 export default {
@@ -7,8 +7,8 @@ export default {
   verifyToken
 };
 
-function newToken(payload) {
-  return jwt.sign(payload, JWT_SECRET, {
+function newToken(params) {
+  return jwt.sign(params, JWT_SECRET, {
     expiresIn: 1800
   });
 }

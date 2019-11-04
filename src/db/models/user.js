@@ -17,9 +17,11 @@ module.exports = (sequelize, DataTypes) => {
           isEmail: true
         }
       },
+
       passwordHash: {
         type: DataTypes.STRING
       },
+
       password: {
         allowNull: false,
         type: DataTypes.VIRTUAL,
@@ -47,13 +49,17 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
-  // Instance methods
   User.prototype.authenticate = function checkPassword(password) {
     const hash = this.getDataValue('passwordHash');
     return bcrypt.compare(password, hash);
   };
-  // Hooks
+
   User.beforeCreate(user => {
+    // eslint-disable-next-line
+    user.passwordHash = bcrypt.hashSync(user.password, 12);
+  });
+
+  User.beforeUpdate(user => {
     // eslint-disable-next-line
     user.passwordHash = bcrypt.hashSync(user.password, 12);
   });

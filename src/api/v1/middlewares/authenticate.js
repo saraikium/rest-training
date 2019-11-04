@@ -6,7 +6,7 @@ const { verifyToken } = auth;
 export default async function authenticateUser(req, resp, next) {
   const bearer = req.headers.authorization;
   if (!bearer || !bearer.startsWith('Bearer ')) {
-    next('Invalid token.');
+    resp.status(401).json({ error: 'Invalid Token' });
   }
   const token = bearer.split(' ')[1];
   const payload = await verifyToken(token);

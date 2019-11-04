@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 import { Comment } from '../../../db/models';
-import { PAGINATION_LIMIT } from '../../configs';
+import { PAGINATION_LIMIT } from '../../config';
 
 /* eslint-disable no-use-before-define */
 export default {
